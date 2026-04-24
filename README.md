@@ -48,6 +48,38 @@ Tuva Health. (n.d.). *DRG* [Reference terminology set]. The Tuva Project. [Link]
 ## Repository Contents
 - `Cleaning_script_notebook.ipynb` — full documented data preparation notebook
 
+
+## 4.23.26 Update Notes
+
+After initial publication, additional cleaning and preparation steps were identified 
+during the Power BI visualization phase and added to the cleaning script in April 2026.
+
+### Primary Dataset (cleaned_data_full_CERT.csv)
+- Identified and removed 1 row with a null value in the Review Decision column 
+  (claim control number 2268268, FY2022 SNF claim). Determined to be a data entry 
+  error in the source data; removal has no meaningful impact on analysis given the 
+  dataset size of 836,000+ rows.
+- Shortened Medicare Part category labels for improved readability in visualizations 
+  (e.g., "Part A(Inpatient Hospital PPS)" → "Part A Inpatient").
+
+### DRG Subset (cleaned_data_DRG_sub.csv)
+- Replaced deprecated "Surgical" label with "P" in the Medical or Surgical column 
+  (affected 1,126 rows). Investigation confirmed these were DRG codes deprecated in 
+  the FY2024 MS-DRG update (effective October 1, 2023), where CMS consolidated
+  DRGs including several cardiac defibrillator and cardiovascular procedure DRGs.
+- Dropped 4 rows with null values in the Medical or Surgical column.
+- Resolved null MDC Code values by mapping Pre-MDC DRGs (MS-DRG 1-19) to "Pre-MDC" 
+  and Unrelated O.R. Procedure DRGs (981, 982, 983, 987, 988, 989) to 
+  "Unrelated O.R. Procedures", per the ICD-10-CM/PCS MS-DRG v43.0 Definitions Manual.
+- Added MDC Description column with human-readable clinical category names, sourced 
+  from the ICD-10-CM/PCS MS-DRG v43.0 Definitions Manual. The v43.0 manual was 
+  selected as it covers FY2026 (effective October 1, 2025 through March 31, 2026) 
+  and is appropriate for all claims data in this dataset which spans FY2021-2025.
+
+### Reference Sources for Additional Cleaning
+- [CMS ICD-10-CM/PCS MS-DRG v43.0 Definitions Manual — MDC descriptions](https://www.cms.gov/icd10m/FY2026-fr-v43-fullcode-cms/fullcode_cms/P0001.html)
+- [CMS ICD-10-CM/PCS MS-DRG v43.0 Definitions Manual — Pre-MDC DRG classifications](https://www.cms.gov/icd10m/FY2026-fr-v43-fullcode-cms/fullcode_cms/P0003.html)
+
 ## Notes
 - DRG data is only present for Part A Inpatient Hospital PPS claims
 - MS-DRG descriptions may vary slightly across fiscal years; the Tuva reference file reflects current assignments and is applied uniformly across all years
